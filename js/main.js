@@ -1,4 +1,3 @@
-const MAP = createMap(10,10,10)
+const MAP = createMap(9, 9, 10)
 MAP.renderMap()
 MAP.plantBombs()
-MAP.revealCells()

@@ -19,6 +19,7 @@ function createMap(width = 10, height = 10, number_bombs = 10){
                 current_btn.setAttribute('type', 'button')
                 current_btn.setAttribute('class', 'btn btn-cell')
                 current_btn.setAttribute('id', 'btn-'+row+'-'+col)
+                current_btn.setAttribute('onclick', 'MAP.clickCell('+row+', '+col+')')
                 current_col.appendChild(current_btn)
 
                 current_row.appendChild(current_col)
@@ -95,6 +96,27 @@ function createMap(width = 10, height = 10, number_bombs = 10){
             }
         }
     }
+    newMap.clickCell = function(y=null, x=null){
+        const virtual_cell = this.virtual_map[y][x]
+        virtual_cell.nowIsClicked()
+        const fisical_cell = this.fisical_map[y][x]
+        fisical_cell.classList.add('clicked')
+        fisical_cell.textContent = virtual_cell.content
+        if(virtual_cell.type == "bomb"){
+            fisical_cell.classList.add('with-bomb')
+        } else {
+            const cell_neighbors = virtual_cell.getNeighbors()
+            for(neighbor in cell_neighbors){
+                try{
+                    const neighbor_y = cell_neighbors[neighbor][0]
+                    const neighbor_x = cell_neighbors[neighbor][1]
+                    if(this.virtual_map[neighbor_y][neighbor_x].type != "bomb" && this.virtual_map[neighbor_y][neighbor_x].clicked == false && virtual_cell.content == ""){
+                        this.clickCell(neighbor_y, neighbor_x)
+                    }
+                } catch(e){}
+            }
+        }
+    }
     
     return newMap
 }
@@ -103,6 +125,7 @@ function createCell(y=null, x=null, type="default", content=""){
     const newCell = {}
     newCell.type = type
     newCell.content = content
+    newCell.clicked = false
     newCell.x = x
     newCell.y = y
     newCell.toBomb = function(){
@@ -119,6 +142,9 @@ function createCell(y=null, x=null, type="default", content=""){
             }
         }
         return neighbors
+    }
+    newCell.nowIsClicked = function(){
+        this.clicked = true
     }
 
     return newCell

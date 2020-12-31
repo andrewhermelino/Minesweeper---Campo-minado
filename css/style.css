@@ -18,3 +18,10 @@
     border-radius: 0px;
     border: 1px solid black;
 }
+.btn-cell.clicked{
+    background-color: green;
+    cursor:auto !important;
+}
+.btn-cell.clicked.with-bomb{
+    background-color: red;
+}
